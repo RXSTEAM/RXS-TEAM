@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BN Last King Predictions</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    body {
+      background-color: #000;
+      font-family: 'Share Tech Mono', monospace;
+      color: #00ffcc;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      text-shadow: 0 0 10px #00ffcc;
+      margin-bottom: 30px;
+    }
+
+    .box, .timer {
+      border: 2px solid #00ffcc;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 18px;
+      text-shadow: 0 0 8px #00ffcc;
+      background-color: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 15px #00ffcc;
+    }
+
+    .timer {
+      font-size: 24px;
+    }
+
+    .result-box {
+      background-color: #400000;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px 0;
+      color: red;
+      font-size: 20px;
+      text-shadow: 0 0 8px red;
+      box-shadow: 0 0 15px red;
+    }
+
+    .history {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .history-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+      text-shadow: 0 0 8px #00ffcc;
+    }
+
+    .history-table {
+      margin-top: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .history-table div {
+      padding: 5px;
+      border-bottom: 1px solid #00ffcc55;
+    }
+
+    .telegram-btn {
+      display: inline-block;
+      margin-top: 30px;
+      background-color: #00fff2;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 20px #00fff2;
+      transition: 0.3s ease;
+    }
+
+    .telegram-btn:hover {
+      box-shadow: 0 0 30px #00fff2, 0 0 60px #00fff2;
+    }
+
+    .theme-switcher {
+      margin-top: 20px;
+      cursor: pointer;
+      color: #00fff2;
+      font-size: 14px;
+      text-decoration: underline;
+    }
+
+    body.light {
+      background-color: #f0f0f0;
+      color: #111;
+    }
+
+    body.light .box, body.light .timer, body.light .history-title {
+      border-color: #333;
+      color: #111;
+      text-shadow: none;
+      background-color: #fff;
+      box-shadow: 0 0 10px #aaa;
+    }
+
+    body.light .result-box {
+      background-color: #ffcccc;
+      color: #a00;
+      text-shadow: none;
+      box-shadow: 0 0 10px #f88;
+    }
+
+    body.light .telegram-btn {
+      background-color: #007aff;
+      color: #fff;
+      box-shadow: 0 0 20px #007aff;
+    }
+
+    body.light .telegram-btn:hover {
+      box-shadow: 0 0 30px #007aff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>RSX AI SERVER<br>PREDICTIONS</h1>
+
+    <div class="box" id="periodBox">Period: -</div>
+    <div class="timer" id="timer">00 : 30</div>
+
+    <div class="result-box" id="resultBox">Result: -</div>
+
+    <div class="history">
+      <div class="history-title">Result History</div>
+      <div class="history-table" id="historyList"></div>
+    </div>
+
+    <a href="https://t.me/yourchannel" target="_blank" class="telegram-btn">Join Telegram Channel</a>
+    <div class="theme-switcher" onclick="toggleTheme()">Switch Theme</div>
+  </div>
+
+
+<script>
+  const timerEl = document.getElementById("timer");
+  const resultBox = document.getElementById("resultBox");
+  const periodBox = document.getElementById("periodBox");
+  const historyList = document.getElementById("historyList");
+
+  const results = [
+    "SMALL 0 RED", "BIG 9 GREEN", "BIG 6 RED", "SMALL 0 GREEN", "BIG 8 RED", "SMALL 2 GREEN",
+    "BIG 7 GREEN", "SMALL 1 RED", "BIG 5 GREEN", "SMALL 3 RED", "BIG 4 RED", "SMALL 9 GREEN",
+    "BIG 3 GREEN", "SMALL 4 RED", "BIG 2 RED", "SMALL 6 GREEN", "BIG 1 RED", "SMALL 5 GREEN",
+    "BIG 0 GREEN", "SMALL 8 RED", "BIG 6 GREEN", "SMALL 7 GREEN", "BIG 2 RED", "SMALL 1 GREEN"
+  ];
+
+  function updateTimerAndPeriod() {
+    const now = new Date();
+    const utc = new Date(now.toUTCString().slice(0, -4)); // Get accurate UTC time
+
+    const seconds = utc.getUTCSeconds();
+    const remainingSeconds = 60 - seconds;
+
+    const hours = utc.getUTCHours();
+    const minutes = utc.getUTCMinutes();
+    const totalMinutes = hours * 60 + minutes;
+
+    const datePart = utc.toISOString().slice(0, 10).replace(/-/g, '');
+    const periodNumber = 10001 + totalMinutes;
+    const fullPeriod = `${datePart}1000${periodNumber}`;
+    periodBox.textContent = `Period: ${fullPeriod}`;
+
+    // Timer display
+    const formatted = `   00  :  ${String(remainingSeconds).padStart(2, '0')}`.replace(/(?<=\d)(?=\d)/g, " ");
+    timerEl.textContent = formatted;
+
+    // New result every new minute
+    if (seconds === 0) {
+      const result = results[Math.floor(Math.random() * results.length)];
+      resultBox.textContent = `Result: ${result}`;
+      const log = document.createElement("div");
+      log.textContent = `${fullPeriod} - ${result}`;
+      historyList.prepend(log);
+      if (historyList.children.length > 20) {
+        historyList.removeChild(historyList.lastChild);
+      }
+    }
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("light");
+  }
+
+  setInterval(updateTimerAndPeriod, 1000);
+  updateTimerAndPeriod(); // Initialize once on load
+</script>
