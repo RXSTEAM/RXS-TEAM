@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RSX AI Auto Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Orbitron', sans-serif;
+      color: #ffffff;
+      text-align: center;
+      background: url("/mnt/data/file-EoLdkwF9nhg6L5vWgH6qqF") no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: brightness(0.9) blur(2px);
+      position: relative;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 0 15px rgba(255, 184, 108, 0.7);
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease-in-out;
+      color: #fff8ec;
+    }
+
+    .box:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 25px rgba(255, 194, 130, 0.9);
+    }
+
+    .stat-box {
+      display: flex;
+      justify-content: space-around;
+      font-size: 18px;
+    }
+
+    .history-item {
+      padding: 10px;
+      margin: 8px 0;
+      border-bottom: 1px solid #ffd89b;
+      font-size: 15px;
+    }
+
+    .win { color: #a8ff8b; }
+    .loss { color: #ff6a6a; }
+    .pending { color: #ffc04d; }
+
+    h1 {
+      font-size: 32px;
+      color: #ffdfb9;
+      text-shadow: 0 0 10px rgba(255, 184, 108, 0.7);
+    }
+
+    #prediction {
+      font-size: 22px;
+      color: #ffd89b;
+      text-shadow: 0 0 8px rgba(255, 176, 106, 0.9);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        text-shadow: 0 0 10px rgba(255, 176, 106, 0.8), 0 0 20px rgba(255, 176, 106, 0.5);
+      }
+      50% {
+        text-shadow: 0 0 15px rgba(255, 198, 132, 1), 0 0 30px rgba(255, 198, 132, 0.8);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>RSX AI AUTO MODE</h1>
+
+    <div class="box"><strong>Timer:</strong> <span id="timer">00 : 60</span></div>
+    <div class="box"><strong>Current Period:</strong> <span id="currentPeriod">-</span></div>
+    <div class="box"><strong>Prediction:</strong> <span id="prediction">-</span></div>
+
+    <div class="box stat-box">
+      <div><strong>Wins:</strong> <span id="totalWins">0</span></div>
+      <div><strong>Losses:</strong> <span id="totalLosses">0</span></div>
+      <div><strong>Accuracy:</strong> <span id="accuracy">0%</span></div>
+    </div>
+
+    <div class="box">
+      <h3>Prediction History</h3>
+      <div id="historyList"></div>
+    </div>
+  </div>
+
+<script>
+let historyData = [];
+let lastFetchedPeriod = 0;
+let totalWins = 0, totalLosses = 0;
+
+setInterval(() => {
+  const now = new Date();
+  const utc = new Date(now.toUTCString());
+  let seconds = utc.getUTCSeconds();
+  let remainingSeconds = 60 - seconds;
+  let minutes = utc.getUTCMinutes();
+  let hours = utc.getUTCHours();
+  let totalMinutes = hours * 60 + minutes;
+
+  let dateStr = utc.toISOString().slice(0,10).replace(/-/g, '');
+  let currentPeriod = dateStr + '1000' + (10001 + totalMinutes);
+
+  document.getElementById("timer").innerText = `00 : ${remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds}`;
+  document.getElementById("currentPeriod").innerText = currentPeriod;
+
+  if (remainingSeconds === 54) {
+    updatePrediction();
+  }
+}, 1000);
+
+async function fetchGameResult() {
+  try {
+    const payload = {
+      pageSize: 20,
+      pageNo: 1,
+      typeId: 1,
+      language: 0,
+      random: "4a0522c6ecd8410496260e686be2a57c",
+      signature: "334B5E70A0C9B8918B0B15E517E2069C",
+      timestamp: Math.floor(Date.now() / 1000)
+    };
+    let response = await fetch("https://api.bdg88zf.com/api/webapi/GetNoaverageEmerdList", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    let data = await response.json();
+    return data?.data?.list || [];
+  } catch (e) {
+    console.error("Fetch error:", e);
+    return [];
+  }
+}
+
+function smartTrendAnalysis(history) {
+  let score = 0;
+  let weight = 1;
+
+  history.slice(0, 10).forEach((item, index) => {
+    if (item.result >= 5) score += weight;
+    else score -= weight;
+    weight *= 0.9;
+  });
+
+  return score >= 0 ? "BIG" : "SMALL";
+}
+
+function autoPredict(history) {
+  let prediction = smartTrendAnalysis(history);
+  return { type: prediction };
+}
+
+async function updatePrediction() {
+  let resultList = await fetchGameResult();
+  if (!resultList || resultList.length === 0) return;
+
+  let latest = resultList[0];
+  if (latest.issueNumber === lastFetchedPeriod) return;
+
+  lastFetchedPeriod = latest.issueNumber;
+
+  resultList.forEach(entry => {
+    if (!historyData.find(item => item.period === entry.issueNumber)) {
+      historyData.unshift({
+        period: entry.issueNumber,
+        result: entry.number,
+        prediction: "-",
+        resultStatus: "-"
+      });
+    }
+  });
+
+  let prediction = autoPredict(historyData);
+  document.getElementById("prediction").innerText = prediction.type;
+
+  historyData[0].prediction = prediction.type;
+  historyData[0].resultStatus = (prediction.type === (latest.number >= 5 ? "BIG" : "SMALL")) ? "WIN" : "LOSS";
+
+  updateStats();
+  updateHistory();
+}
+
+function updateStats() {
+  totalWins = historyData.filter(item => item.resultStatus === "WIN").length;
+  totalLosses = historyData.filter(item => item.resultStatus === "LOSS").length;
+  let accuracy = ((totalWins / (totalWins + totalLosses)) * 100) || 0;
+  document.getElementById("totalWins").innerText = totalWins;
+  document.getElementById("totalLosses").innerText = totalLosses;
+  document.getElementById("accuracy").innerText = accuracy.toFixed(2) + '%';
+}
+
+function updateHistory() {
+  let historyDiv = document.getElementById("historyList");
+  historyDiv.innerHTML = "";
+  historyData.slice(0, 10).forEach(item => {
+    let resultClass = item.resultStatus === "WIN" ? "win" :
+                      item.resultStatus === "LOSS" ? "loss" : "pending";
+    let div = document.createElement("div");
+    div.className = `history-item ${resultClass}`;
+    div.innerHTML = `<strong>${item.period}</strong><br>${item.prediction} ➡ ${item.result} (${item.resultStatus})`;
+    historyDiv.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
