@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from vipkalmods2999555.github.io/Buy-site/ by HTTrack Website Copier/3.x [XR&CO'2017], Sun, 04 May 2025 10:13:08 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Premium Plans</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 16px;
+      min-height: 100vh;
+    }
+
+    .plan-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      width: 100%;
+      max-width: 420px;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    .card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 32px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border: 1px solid #daf1f0;
+      backdrop-filter: blur(16px);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInCard 1s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
+    .card:nth-child(3) { animation-delay: 0.6s; }
+
+    .card:hover {
+      transform: scale(1.035);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge {
+      position: absolute;
+      top: -14px;
+      right: 20px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      border-radius: 0 0 14px 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge.weekly { background-color: #ff5252; }
+    .badge.monthly { background-color: #2196f3; }
+    .badge.three-month { background-color: #ff9800; }
+
+    .title {
+      color: #0097a7;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      color: #0097a7;
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 24px;
+    }
+
+    .features {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .features li {
+      font-size: 15.5px;
+      color: #444;
+      margin-bottom: 10px;
+      padding-left: 26px;
+      position: relative;
+    }
+
+    .features li::before {
+      content: '✔';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #00cba9;
+      font-size: 16px;
+    }
+
+    .purchase-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      color: white;
+      background: linear-gradient(to right, #00e4d0, #5983e8);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 174, 255, 0.3);
+      transition: all 0.4s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .purchase-btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 0 16px rgba(0, 174, 255, 0.5);
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleEffect 0.6s linear;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes rippleEffect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInCard {
+      0% { opacity: 0; transform: translateY(50px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .title, .price { text-align: center; }
+      .badge { right: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="plan-container">
+    <!-- Weekly Card -->
+    <div class="card">
+      <div class="badge weekly">WEEKLY</div>
+      <div class="title">WEEKLY</div>
+      <div class="price">₹249/wk</div>
+      <ul class="features">
+        <li>5 Predictions / Day</li>
+        <li>30% Refund</li>
+        <li>Basic Features</li>
+        <li>Email Support</li>
+      </ul>
+      <button class="purchase-btn" onclick="handlePurchase(event)">PURCHASE NOW</button>
+    </div>
+
+    <!-- Monthly Card -->
+    <div class="card">
+      <div class="badge monthly">MONTHLY</div>
+      <div class="title">MONTHLY</div>
+      <div class="price">₹499/mo</div>
+      <ul class="features">
+        <li>10 Predictions / Day</li>
+        <li>40% Refund</li>
+        <li>Standard Features</li>
+        <li>Priority Support</li>
+      </ul>
+      <button class="purchase-btn" onclick="handlePurchase(event)">PURCHASE NOW</button>
+    </div>
+
+    <!-- 3-Month Card -->
+    <div class="card">
+      <div class="badge three-month">3-MONTH</div>
+      <div class="title">3-MONTH</div>
+      <div class="price">₹699/3mo</div>
+      <ul class="features">
+        <li>15 Predictions / Day</li>
+        <li>50% Refund</li>
+        <li>Pro Features</li>
+        <li>Priority Support</li>
+      </ul>
+      <button class="purchase-btn" onclick="handlePurchase(event)">PURCHASE NOW</button>
+    </div>
+  </div>
+
+  <script>
+    function handlePurchase(event) {
+      const btn = event.currentTarget;
+
+      // Ripple Effect
+      const circle = document.createElement("span");
+      circle.classList.add("ripple");
+      const rect = btn.getBoundingClientRect();
+      circle.style.left = `${event.clientX - rect.left}px`;
+      circle.style.top = `${event.clientY - rect.top}px`;
+      btn.appendChild(circle);
+
+      setTimeout(() => {
+        circle.remove();
+        window.open("../../external.html?link=https://t.me/Team_XDR", "_blank");
+      }, 400);
+    }
+  </script>
+</body>
+
+<!-- Mirrored from vipkalmods2999555.github.io/Buy-site/ by HTTrack Website Copier/3.x [XR&CO'2017], Sun, 04 May 2025 10:13:08 GMT -->
+</html>
